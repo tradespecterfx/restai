@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RestAI — Грантова заявка</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #0a0a0a;
+    color: #fff;
+  }
+
+  .slide {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 80px;
+    page-break-after: always;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Accent line */
+  .slide::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 6px;
+    background: linear-gradient(180deg, #FF6B35, #F7C59F);
+  }
+
+  .slide-1 {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+    align-items: center;
+    text-align: center;
+  }
+  .slide-1::before { display: none; }
+
+  .badge {
+    display: inline-block;
+    background: rgba(255,107,53,0.15);
+    border: 1px solid #FF6B35;
+    color: #FF6B35;
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+  }
+
+  h1.hero {
+    font-size: 72px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 10px;
+    background: linear-gradient(90deg, #fff, #FF6B35);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-sub {
+    font-size: 22px;
+    color: #aaa;
+    margin-bottom: 40px;
+    font-weight: 300;
+  }
+
+  .hero-desc {
+    font-size: 18px;
+    color: #ccc;
+    max-width: 600px;
+    line-height: 1.6;
+    margin-bottom: 50px;
+  }
+
+  .grant-amount {
+    display: inline-block;
+    background: linear-gradient(135deg, #FF6B35, #F7C59F);
+    color: #000;
+    font-size: 28px;
+    font-weight: 800;
+    padding: 16px 40px;
+    border-radius: 50px;
+    margin-bottom: 20px;
+  }
+
+  .slide-number {
+    position: absolute;
+    top: 30px;
+    right: 40px;
+    color: #333;
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+
+  h2.slide-title {
+    font-size: 42px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #fff;
+  }
+
+  .title-line {
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, #FF6B35, #F7C59F);
+    border-radius: 2px;
+    margin-bottom: 40px;
+  }
+
+  h3 { color: #FF6B35; margin-bottom: 10px; font-size: 18px; }
+
+  p, li { line-height: 1.7; color: #ccc; font-size: 16px; }
+
+  ul { padding-left: 20px; }
+  li { margin-bottom: 8px; }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 10px;
+  }
+
+  .cards-2 { grid-template-columns: repeat(2, 1fr); }
+
+  .card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,107,53,0.2);
+    border-radius: 16px;
+    padding: 28px;
+  }
+
+  .card-icon { font-size: 36px; margin-bottom: 14px; }
+  .card h3 { font-size: 17px; margin-bottom: 8px; }
+  .card p { font-size: 14px; }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 10px;
+  }
+
+  .stat {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,107,53,0.2);
+    border-radius: 16px;
+    padding: 32px 24px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-size: 48px;
+    font-weight: 800;
+    background: linear-gradient(90deg, #FF6B35, #F7C59F);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: block;
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+
+  .stat-label { color: #aaa; font-size: 14px; }
+
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 10px;
+  }
+
+  .timeline-item {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+  }
+
+  .tl-marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 80px;
+  }
+
+  .tl-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #FF6B35;
+    margin-bottom: 6px;
+    margin-top: 4px;
+  }
+
+  .tl-dot.done { background: #4CAF50; }
+  .tl-dot.active { background: #FF6B35; box-shadow: 0 0 10px #FF6B35; }
+  .tl-dot.future { background: #333; border: 2px solid #555; }
+
+  .tl-phase {
+    font-size: 11px;
+    color: #666;
+    text-align: center;
+    letter-spacing: 1px;
+  }
+
+  .tl-content {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 18px 22px;
+    flex: 1;
+  }
+
+  .tl-content h3 { font-size: 16px; margin-bottom: 6px; }
+  .tl-content p { font-size: 14px; }
+
+  .tl-content.done { border-color: rgba(76,175,80,0.3); }
+  .tl-content.active { border-color: rgba(255,107,53,0.4); }
+
+  .budget-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+
+  .budget-table th {
+    background: rgba(255,107,53,0.15);
+    color: #FF6B35;
+    padding: 14px 20px;
+    text-align: left;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .budget-table td {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    color: #ccc;
+    font-size: 15px;
+  }
+
+  .budget-table tr:last-child td {
+    color: #fff;
+    font-weight: 700;
+    font-size: 17px;
+    border-bottom: none;
+    background: rgba(255,107,53,0.08);
+  }
+
+  .amount-col { color: #fff !important; font-weight: 600 !important; }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 20px;
+  }
+
+  .contact-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,107,53,0.2);
+    border-radius: 14px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .contact-icon { font-size: 28px; }
+  .contact-label { color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .contact-value { color: #fff; font-size: 16px; font-weight: 500; }
+
+  .tag {
+    display: inline-block;
+    background: rgba(255,107,53,0.12);
+    border: 1px solid rgba(255,107,53,0.3);
+    color: #FF6B35;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin: 4px 4px 4px 0;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+
+  .highlight-box {
+    background: linear-gradient(135deg, rgba(255,107,53,0.1), rgba(247,197,159,0.05));
+    border: 1px solid rgba(255,107,53,0.3);
+    border-radius: 16px;
+    padding: 28px;
+  }
+
+  .highlight-box p { color: #ddd; font-size: 17px; line-height: 1.8; }
+
+  @media print {
+    body { background: #0a0a0a; }
+    .slide { page-break-after: always; min-height: 100vh; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: TITLE -->
+<div class="slide slide-1">
+  <div class="badge">Грантова заявка · 2026</div>
+  <h1 class="hero">RestAI</h1>
+  <div class="hero-sub">AI-маркетолог для ресторанів</div>
+  <p class="hero-desc">
+    Автоматизований SMM-агент, який замінює штатного маркетолога —
+    створює контент, обробляє фото та публікує у соцмережі.
+  </p>
+  <div class="grant-amount">Запит: 50 000 грн</div>
+  <p style="color:#666; font-size:14px;">Маркетинг та залучення перших клієнтів</p>
+</div>
+
+<!-- SLIDE 2: ПРОБЛЕМА -->
+<div class="slide">
+  <div class="slide-number">02 / 08</div>
+  <h2 class="slide-title">Проблема</h2>
+  <div class="title-line"></div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">😩</div>
+      <h3>Немає часу на SMM</h3>
+      <p>Власники ресторанів ведуть соцмережі самі або доручають офіціантам. Результат — нерегулярні пости низької якості.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">💸</div>
+      <h3>Маркетолог — дорого</h3>
+      <p>Найм SMM-спеціаліста коштує від <strong style="color:#fff">15 000–25 000 грн/міс</strong>. Для малого ресторану це критично.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📉</div>
+      <h3>Контент не конвертує</h3>
+      <p>Шаблонні пости без стратегії не залучають нових гостей і не формують лояльність аудиторії.</p>
+    </div>
+  </div>
+
+  <div style="margin-top:32px;" class="highlight-box">
+    <p>
+      <strong style="color:#FF6B35">В Україні понад 40 000 ресторанів і кафе.</strong>
+      Більшість із них не мають системного підходу до просування в соцмережах.
+      Це величезний незайнятий ринок.
+    </p>
+  </div>
+</div>
+
+<!-- SLIDE 3: РІШЕННЯ -->
+<div class="slide">
+  <div class="slide-number">03 / 08</div>
+  <h2 class="slide-title">Рішення</h2>
+  <div class="title-line"></div>
+  <p style="margin-bottom:28px; font-size:17px; color:#ddd;">RestAI — SaaS-платформа з AI-агентами, яка повністю автоматизує маркетинг ресторану за <strong style="color:#FF6B35">50–100 $/міс</strong> замість 500$+ за живого маркетолога.</p>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">📅</div>
+      <h3>Контент-план</h3>
+      <p>AI аналізує профіль ресторану та генерує персоналізований план на місяць під кухню, цінову категорію та аудиторію.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">✍️</div>
+      <h3>Готові пости</h3>
+      <p>Текст, хештеги та ТЗ для фотографа — в стилі конкретного ресторану, не шаблонний контент.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🖼</div>
+      <h3>Обробка фото</h3>
+      <p>Автоматичний кроп під формати Instagram та Facebook, фільтри, вотермарк з назвою ресторану.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🚀</div>
+      <h3>Автопублікація</h3>
+      <p>Підключення Instagram, Facebook, TikTok через API — контент публікується за розкладом автоматично.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📊</div>
+      <h3>Аналітика</h3>
+      <p>Звіти по охопленнях, залученості та зросту підписників із рекомендаціями що покращити.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">💬</div>
+      <h3>Telegram-інтерфейс</h3>
+      <p>Управління всім через зручний Telegram-бот — з телефону, без технічних знань.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4: ЩО ЗРОБЛЕНО -->
+<div class="slide">
+  <div class="slide-number">04 / 08</div>
+  <h2 class="slide-title">Що вже зроблено</h2>
+  <div class="title-line"></div>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="tl-marker">
+        <div class="tl-dot done"></div>
+        <div class="tl-phase" style="color:#4CAF50">ГОТОВО</div>
+      </div>
+      <div class="tl-content done">
+        <h3>AI-агент для генерації контенту</h3>
+        <p>Персоналізований контент-план, написання постів, ТЗ для фотографів — з урахуванням кухні, середнього чеку та цільової аудиторії ресторану.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-marker">
+        <div class="tl-dot done"></div>
+        <div class="tl-phase" style="color:#4CAF50">ГОТОВО</div>
+      </div>
+      <div class="tl-content done">
+        <h3>Онбординг та профіль ресторану</h3>
+        <p>Система збору даних про ресторан через Telegram-бот: концепція, середній чек, аудиторія, стиль комунікації, посилання на меню та соцмережі.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-marker">
+        <div class="tl-dot done"></div>
+        <div class="tl-phase" style="color:#4CAF50">ГОТОВО</div>
+      </div>
+      <div class="tl-content done">
+        <h3>Модуль обробки фото</h3>
+        <p>Автоматичний кроп під Instagram (квадрат, портрет, сторис) та Facebook. Кольорові пресети: теплий, холодний, яскравий, чистий. Вотермарк з назвою ресторану.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-marker">
+        <div class="tl-dot done"></div>
+        <div class="tl-phase" style="color:#4CAF50">ГОТОВО</div>
+      </div>
+      <div class="tl-content done">
+        <h3>Telegram-бот — головний інтерфейс</h3>
+        <p>Повноцінний бот з меню, кнопками та inline-клавіатурою. Власник ресторану управляє всім маркетингом прямо з телефону.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-marker">
+        <div class="tl-dot active"></div>
+        <div class="tl-phase">В РОБОТІ</div>
+      </div>
+      <div class="tl-content active">
+        <h3>Інтеграція з Instagram та Facebook API</h3>
+        <p>Підключення Meta Graph API для автоматичної публікації фото та відео за розкладом.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5: ROADMAP -->
+<div class="slide">
+  <div class="slide-number">05 / 08</div>
+  <h2 class="slide-title">Дорожня карта</h2>
+  <div class="title-line"></div>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="tl-marker">
+        <div class="tl-dot done"></div>
+        <div class="tl-phase" style="color:#4CAF50">ЧЕРВЕНЬ</div>
+      </div>
+      <div class="tl-content done">
+        <h3>MVP — версія 1.0 ✅</h3>
+        <p>AI-генерація контенту, обробка фото, Telegram-бот. Тестування з першими 3–5 ресторанами безкоштовно.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-marker">
+        <div class="tl-dot active"></div>
+        <div class="tl-phase">ЛИПЕНЬ</div>
+      </div>
+      <div class="tl-content active">
+        <h3>Автопублікація в соцмережі</h3>
+        <p>Instagram, Facebook автопостинг. Перші платні клієнти. Мета: 10 ресторанів × 50$/міс = <strong style="color:#FF6B35">500$/міс MRR</strong>.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-marker">
+        <div class="tl-dot future"></div>
+        <div class="tl-phase">СЕРПЕНЬ</div>
+      </div>
+      <div class="tl-content">
+        <h3>Відео-монтаж та TikTok</h3>
+        <p>Автоматичний монтаж Reels та TikTok-відео. Підключення TikTok Business API.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-marker">
+        <div class="tl-dot future"></div>
+        <div class="tl-phase">ВЕРЕСЕНЬ</div>
+      </div>
+      <div class="tl-content">
+        <h3>Масштабування</h3>
+        <p>50+ ресторанів. Веб-дашборд. Аналітика ефективності. MRR: <strong style="color:#fff">2 500$/міс</strong>.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6: РИНОК -->
+<div class="slide">
+  <div class="slide-number">06 / 08</div>
+  <h2 class="slide-title">Ринок та бізнес-модель</h2>
+  <div class="title-line"></div>
+
+  <div class="stat-grid" style="margin-bottom:32px;">
+    <div class="stat">
+      <span class="stat-num">40к+</span>
+      <div class="stat-label">Ресторанів і кафе в Україні</div>
+    </div>
+    <div class="stat">
+      <span class="stat-num">500$</span>
+      <div class="stat-label">Середня вартість SMM-фахівця на місяць</div>
+    </div>
+    <div class="stat">
+      <span class="stat-num">10×</span>
+      <div class="stat-label">Дешевше ніж живий маркетолог</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <h3 style="margin-bottom:16px;">Модель монетизації</h3>
+      <div class="card" style="margin-bottom:16px;">
+        <h3>SaaS підписка</h3>
+        <p>Basic — <strong style="color:#fff">50$/міс</strong> (контент + фото)<br>Pro — <strong style="color:#fff">100$/міс</strong> (+ автопублікація + відео)</p>
+      </div>
+      <div class="card">
+        <h3>Цільовий ринок</h3>
+        <p>Ресторани, кафе, бари, доставки їжі — малий та середній бізнес без власного маркетолога.</p>
+      </div>
+    </div>
+    <div>
+      <h3 style="margin-bottom:16px;">Конкурентні переваги</h3>
+      <ul style="list-style:none; padding:0;">
+        <li style="padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.06); color:#ccc;">✅ Контент під конкретний ресторан, не шаблони</li>
+        <li style="padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.06); color:#ccc;">✅ Управління через Telegram — просто і зручно</li>
+        <li style="padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.06); color:#ccc;">✅ Ціна в 10 разів нижча за живого SMM</li>
+        <li style="padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.06); color:#ccc;">✅ Автоматична публікація без участі власника</li>
+        <li style="padding:10px 0; color:#ccc;">✅ Масштабується на будь-який регіон</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7: БЮДЖЕТ -->
+<div class="slide">
+  <div class="slide-number">07 / 08</div>
+  <h2 class="slide-title">Використання гранту — 50 000 грн</h2>
+  <div class="title-line"></div>
+  <p style="margin-bottom:28px; color:#aaa;">Кошти спрямовуються виключно на маркетинг та залучення перших клієнтів. Розробка продукту ведеться власними силами.</p>
+
+  <table class="budget-table">
+    <thead>
+      <tr>
+        <th>Напрямок</th>
+        <th>Опис</th>
+        <th class="amount-col">Сума</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>🎯 Таргетована реклама</td>
+        <td>Facebook Ads та Instagram Ads — залучення власників ресторанів</td>
+        <td class="amount-col">20 000 грн</td>
+      </tr>
+      <tr>
+        <td>📱 Контент та брендинг</td>
+        <td>Промо-відео, дизайн лендінгу, кейси перших клієнтів</td>
+        <td class="amount-col">12 000 грн</td>
+      </tr>
+      <tr>
+        <td>🤝 Партнерства</td>
+        <td>Співпраця з асоціаціями рестораторів, ресторанними блогерами та медіа</td>
+        <td class="amount-col">8 000 грн</td>
+      </tr>
+      <tr>
+        <td>📧 Email та cold outreach</td>
+        <td>Пряме залучення ресторанів через email та месенджери</td>
+        <td class="amount-col">5 000 грн</td>
+      </tr>
+      <tr>
+        <td>🧪 Тестові підписки</td>
+        <td>Безкоштовний перший місяць для 10 ресторанів-партнерів для збору відгуків</td>
+        <td class="amount-col">5 000 грн</td>
+      </tr>
+      <tr>
+        <td><strong>РАЗОМ</strong></td>
+        <td><strong>Маркетинг та залучення перших клієнтів</strong></td>
+        <td><strong>50 000 грн</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:24px;" class="highlight-box">
+    <p>
+      <strong style="color:#FF6B35">Очікуваний результат:</strong>
+      10–20 платних клієнтів протягом 60 днів після запуску маркетингу.
+      При тарифі 50$/міс це <strong style="color:#fff">500–1 000$/міс MRR</strong> та окупність за 3–4 місяці.
+    </p>
+  </div>
+</div>
+
+<!-- SLIDE 8: КОНТАКТ -->
+<div class="slide" style="align-items:center; text-align:center;">
+  <div class="slide-number">08 / 08</div>
+  <div class="badge">Засновник проекту</div>
+  <h2 class="slide-title" style="margin-top:10px;">Бондаренко Кирило Дмитрович</h2>
+  <div class="title-line" style="margin:20px auto;"></div>
+  <p style="max-width:500px; margin:0 auto 40px; color:#aaa; font-size:17px; line-height:1.7;">
+    Розробник та ідейний натхненник RestAI. Будую AI-продукти для малого бізнесу з фокусом на автоматизацію маркетингу.
+  </p>
+
+  <div class="contact-grid" style="max-width:600px; margin:0 auto;">
+    <div class="contact-item">
+      <div class="contact-icon">📧</div>
+      <div>
+        <div class="contact-label">Email</div>
+        <div class="contact-value">goldsailbond@gmail.com</div>
+      </div>
+    </div>
+    <div class="contact-item">
+      <div class="contact-icon">📱</div>
+      <div>
+        <div class="contact-label">Телефон</div>
+        <div class="contact-value">+380 96 731 30 68</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:50px;">
+    <span class="tag">AI / SaaS</span>
+    <span class="tag">B2B</span>
+    <span class="tag">HoReCa</span>
+    <span class="tag">SMM Automation</span>
+    <span class="tag">Ukraine</span>
+  </div>
+
+  <div style="margin-top:40px; padding:24px 40px; background:linear-gradient(135deg,rgba(255,107,53,0.1),rgba(247,197,159,0.05)); border:1px solid rgba(255,107,53,0.3); border-radius:16px; display:inline-block;">
+    <div style="font-size:14px; color:#aaa; margin-bottom:6px;">Запит на грант</div>
+    <div style="font-size:36px; font-weight:800; background:linear-gradient(90deg,#FF6B35,#F7C59F); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">50 000 грн</div>
+    <div style="font-size:14px; color:#aaa; margin-top:6px;">на маркетинг та залучення перших клієнтів</div>
+  </div>
+</div>
+
+</body>
+</html>
